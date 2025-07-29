@@ -1,5 +1,3 @@
-
- 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -108,6 +106,7 @@ def logout(request):
 # ***********************************************************************************************************
 # **************************** User profile section functions ***********************************************
 
+
 # Get profil by userId
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -139,3 +138,24 @@ def get_user_profile(request, user_id):
 
 
 # Get the all users list from database
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_users_list(request):
+    users = User.objects.all()
+    users_data = []
+    for user in users:
+        users_data.append(
+            {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "phone": user.phone,
+            }
+        )
+    response_data = {
+        'status_code': 6000,
+        'data': users_data,
+        'message':'Get all users list'
+    }
+    return Response(response_data, status=200)
