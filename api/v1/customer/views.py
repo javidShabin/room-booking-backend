@@ -8,8 +8,8 @@ from rest_framework.generics import get_object_or_404
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
-# ******************************************************************************************
-# ************************ User authentication functions ***********************************
+# **************************************************************************************
+# ************************ User authentication functions *******************************
 
 
 # User login function
@@ -103,8 +103,8 @@ def logout(request):
 # ********************************************************
 
 
-# ***********************************************************************************************************
-# **************************** User profile section functions ***********************************************
+# *************************************************************************************
+# **************************** User profile section functions *************************
 
 
 # Get profil by userId
@@ -136,6 +136,9 @@ def get_user_profile(request, user_id):
 
     return Response(response_data, status=200)
 
+# ******************** User get profile by user id **********************
+# ***********************************************************************
+
 
 # Get the all users list from database
 @api_view(["GET"])
@@ -159,3 +162,6 @@ def get_users_list(request):
         'message':'Get all users list'
     }
     return Response(response_data, status=200)
+
+# ******************** User list function is completed *******************
+# ************************************************************************
