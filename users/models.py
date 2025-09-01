@@ -12,6 +12,7 @@ class User(AbstractUser):
     phone = models.CharField(max_length =10 )
     is_customer = models.BooleanField(default=False)
     is_manager = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
