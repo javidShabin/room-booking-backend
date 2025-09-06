@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from users.models import User
 from customer.models import Customer
 from rest_framework.generics import get_object_or_404
+from .serializer import UserProfileSerializer
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
@@ -136,20 +137,22 @@ def get_user_profile(request, user_id):
 
     customer = Customer.objects.filter(user=user).first()
 
-    data = {
-        "id": user.id,
-        "firstName": user.first_name,
-        "lastName": user.last_name,
-        "email": user.email,
-        "phone": user.phone,
-        "isCustomer": user.is_customer,
-        "isManager": user.is_manager,
-        "customer": {"id": customer.id} if customer else None,
-    }
+    serializer = UserProfileSerializer(user)
+
+    # data = {
+    #     "id": user.id,
+    #     "firstName": user.first_name,
+    #     "lastName": user.last_name,
+    #     "email": user.email,
+    #     "phone": user.phone,
+    #     "isCustomer": user.is_customer,
+    #     "isManager": user.is_manager,
+    #     "customer": {"id": customer.id} if customer else None,
+    # }
 
     response_data = {
         "status_code": 6000,
-        "data": data,
+        "data": serializer.data,
         "message": "User profile fetched successfully",
     }
 
