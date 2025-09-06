@@ -136,6 +136,7 @@ def get_user_profile(request, user_id):
 
     customer = Customer.objects.filter(user=user).first()
 
+    serializer = UserSerializer
     data = {
         "id": user.id,
         "firstName": user.first_name,
