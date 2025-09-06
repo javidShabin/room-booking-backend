@@ -49,44 +49,63 @@ def signup(request):
     password = request.data.get("password")
     confirm_password = request.data.get("confirmPassword")
     phone = request.data.get("phone")
-    # Check the needed fileds are present
-    if not all([first_name, last_name, email, password, confirm_password, phone]):
+    role = request.data.get("role")  # "customer", "manager", "admin"
+
+    # Check required fields
+    if not all([first_name, last_name, email, password, confirm_password, phone, role]):
         return Response(
-            {"status": 6001, "message": "All fields are required"}, status=400
+            {"status": 6001, "message": "All fields are required"},
+            status=400
         )
-    # Compare the password and confirmPassword
+
+    # Compare passwords
     if password != confirm_password:
         return Response(
-            {"status": 6001, "message": "Password do not match"}, status=400
+            {"status": 6001, "message": "Passwords do not match"},
+            status=400
         )
-    # Check the user is exister already
+
+    # Check if email already exists
     if User.objects.filter(email=email).exists():
         return Response(
             {"status": 6001, "message": "Email already exists"},
             status=400,
         )
-        # Create new user
-    user = User.objects.create_user(
-        first_name=first_name,
-        last_name=last_name,
-        email=email,
-        password=password,
-        phone=phone,
-    )
-    # Save the user
-    user.save()
-    # Create customer by the user details
-    customer = Customer.objects.create(user=user)
-    customer.save()
+
+    # Validate role
+    if role not in ["customer", "manager", "admin"]:
+        return Response(
+            {'status': 6001, 'message':'Invalid role'},
+            status=400
+        )
+
+    # Create new user with role-specific flags
+    user_data = {
+        "first_name": first_name,
+        "last_name": last_name,
+        "email": email,
+        "password": password,
+        "phone": phone,
+    }
+
+    if role == "customer":
+        user = User.objects.create_user(**user_data, is_customer=True)
+        Customer.objects.create(user=user)  # optional if using Customer model
+    elif role == "manager":
+        user = User.objects.create_user(**user_data, is_manager=True)
+    elif role == "admin":
+        user = User.objects.create_user(**user_data, is_admin=True, is_staff=True, is_superuser=True)
+
+    # Generate JWT token
     refresh = RefreshToken.for_user(user)
-    # Send response with access token
+
+    # Send response
     response_data = {
         "status_code": 6000,
-        "data": {"access": str(refresh.access_token)},
+        "data": {"access": str(refresh.access_token), "role": role},
         "message": "User signup success",
     }
     return Response(response_data)
-
 
 # End the signup function
 # *************************************************************************
