@@ -138,18 +138,7 @@ def get_user_profile(request, user_id):
     customer = Customer.objects.filter(user=user).first()
 
     serializer = UserProfileSerializer(user)
-
-    # data = {
-    #     "id": user.id,
-    #     "firstName": user.first_name,
-    #     "lastName": user.last_name,
-    #     "email": user.email,
-    #     "phone": user.phone,
-    #     "isCustomer": user.is_customer,
-    #     "isManager": user.is_manager,
-    #     "customer": {"id": customer.id} if customer else None,
-    # }
-
+    
     response_data = {
         "status_code": 6000,
         "data": serializer.data,
