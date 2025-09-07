@@ -135,8 +135,6 @@ def get_user_profile(request, user_id):
     if request.user.id != user.id:
         return Response({"status": 6001, "message": "Permission denied"}, status=403)
 
-    customer = Customer.objects.filter(user=user).first()
-
     serializer = UserProfileSerializer(user)
     
     response_data = {
