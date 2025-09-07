@@ -7,7 +7,7 @@ from customer.models import Customer
 from rest_framework.generics import get_object_or_404
 from .serializer import UserProfileSerializer
 
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth import authenticate
 
 # **************************************************************************************
 # ************************ User authentication functions *******************************
