@@ -235,3 +235,6 @@ def update_user_profile(request, user_id):
         "message": "User profile updated successfully",
     }
     return Response(response_data, status=200)
+
+# ******************** User profile updating function complete *******************
+# ************************************************************************
