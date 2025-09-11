@@ -56,17 +56,26 @@ def signup(request):
     role = request.data.get("role")  # "customer", "manager", "admin"
 
     # Check required fields
-    if not all([first_name, last_name, email, password, confirm_password, phone,profile_image, role]):
+    if not all(
+        [
+            first_name,
+            last_name,
+            email,
+            password,
+            confirm_password,
+            phone,
+            profile_image,
+            role,
+        ]
+    ):
         return Response(
-            {"status": 6001, "message": "All fields are required"},
-            status=400
+            {"status": 6001, "message": "All fields are required"}, status=400
         )
 
     # Compare passwords
     if password != confirm_password:
         return Response(
-            {"status": 6001, "message": "Passwords do not match"},
-            status=400
+            {"status": 6001, "message": "Passwords do not match"}, status=400
         )
 
     # Check if email already exists
@@ -78,10 +87,7 @@ def signup(request):
 
     # Validate role
     if role not in ["customer", "manager", "admin"]:
-        return Response(
-            {'status': 6001, 'message':'Invalid role'},
-            status=400
-        )
+        return Response({"status": 6001, "message": "Invalid role"}, status=400)
 
     # Create new user with role-specific flags
     user_data = {
@@ -90,7 +96,7 @@ def signup(request):
         "email": email,
         "password": password,
         "phone": phone,
-        "profile_image": profile_image
+        "profile_image": profile_image,
     }
 
     if role == "customer":
@@ -99,7 +105,9 @@ def signup(request):
     elif role == "manager":
         user = User.objects.create_user(**user_data, is_manager=True)
     elif role == "admin":
-        user = User.objects.create_user(**user_data, is_admin=True, is_staff=True, is_superuser=True)
+        user = User.objects.create_user(
+            **user_data, is_admin=True, is_staff=True, is_superuser=True
+        )
 
     # Generate JWT token
     refresh = RefreshToken.for_user(user)
@@ -111,6 +119,7 @@ def signup(request):
         "message": "User signup success",
     }
     return Response(response_data)
+
 
 # End the signup function
 # *************************************************************************
@@ -140,7 +149,7 @@ def get_user_profile(request, user_id):
         return Response({"status": 6001, "message": "Permission denied"}, status=403)
 
     serializer = UserProfileSerializer(user)
-    
+
     response_data = {
         "status_code": 6000,
         "data": serializer.data,
@@ -148,6 +157,7 @@ def get_user_profile(request, user_id):
     }
 
     return Response(response_data, status=200)
+
 
 # ******************** User get profile by user id **********************
 # ***********************************************************************
@@ -167,15 +177,61 @@ def get_users_list(request):
                 "last_name": user.last_name,
                 "email": user.email,
                 "phone": user.phone,
-                "profile": user.profile_image.url if user.profile_image else None
+                "profile": user.profile_image.url if user.profile_image else None,
             }
         )
     response_data = {
-        'status_code': 6000,
-        'data': users_data,
-        'message':'Get all users list'
+        "status_code": 6000,
+        "data": users_data,
+        "message": "Get all users list",
     }
     return Response(response_data, status=200)
 
+
 # ******************** User list function is completed *******************
 # ************************************************************************
+
+
+# ************************************************************************
+# ******************** User profile update , Find user by Id *************
+
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def update_user_profile(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+
+    # Ensure the user can only update their own profile
+    if request.user.id != user.id:
+        return Response({"status": 6001, "message": "Permission denied"}, status=403)
+
+    # Extract data from request
+    first_name = request.data.get("first_name")
+    last_name = request.data.get("last_name")
+    phone = request.data.get("phone")
+    profile_image = request.FILES.get("profile_image")
+
+    # Update fields if provided
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
+    if phone:
+        user.phone = phone
+
+    if profile_image:
+        # delete old image file if exists
+        if user.profile_image:
+            user.profile_image.delete(save=False)
+        user.profile_image = profile_image
+    user.save()
+
+    serializer = UserProfileSerializer(user)
+
+    response_data = {
+        "status_code": 6000,
+        "data": serializer.data,
+        "message": "User profile updated successfully",
+    }
+    return Response(response_data, status=200)
