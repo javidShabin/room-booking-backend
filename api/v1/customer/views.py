@@ -167,6 +167,7 @@ def get_users_list(request):
                 "last_name": user.last_name,
                 "email": user.email,
                 "phone": user.phone,
+                "profile": user.profile_image.url if user.profile_image else None
             }
         )
     response_data = {
