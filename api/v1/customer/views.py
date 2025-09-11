@@ -1,4 +1,4 @@
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -6,6 +6,7 @@ from users.models import User
 from customer.models import Customer
 from rest_framework.generics import get_object_or_404
 from .serializer import UserProfileSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from django.contrib.auth import authenticate
 
@@ -42,6 +43,7 @@ def login(request):
 # ******************************************
 @api_view(["POST"])
 @permission_classes([AllowAny])
+@parser_classes([MultiPartParser, FormParser])
 def signup(request):
     # Get user details from request data
     first_name = request.data.get("firstName")
@@ -50,10 +52,11 @@ def signup(request):
     password = request.data.get("password")
     confirm_password = request.data.get("confirmPassword")
     phone = request.data.get("phone")
+    profile_image = request.FILES.get("profile_image")
     role = request.data.get("role")  # "customer", "manager", "admin"
 
     # Check required fields
-    if not all([first_name, last_name, email, password, confirm_password, phone, role]):
+    if not all([first_name, last_name, email, password, confirm_password, phone,profile_image, role]):
         return Response(
             {"status": 6001, "message": "All fields are required"},
             status=400
@@ -87,6 +90,7 @@ def signup(request):
         "email": email,
         "password": password,
         "phone": phone,
+        "profile_image": profile_image
     }
 
     if role == "customer":
