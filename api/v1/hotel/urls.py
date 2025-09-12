@@ -1,10 +1,11 @@
 from django.urls import path
 
-from api.v1.hotel.views import create_hotel
+from api.v1.hotel import views
 
 app_name = "hotel"
 
 urlpatterns = [
-    path("create/", create_hotel, name="create_hotel")
+    path("create/", views.create_hotel, name="create_hotel"),
+    path("hotel_list/", views.get_hotels_list, name="hotel_list")
   
 ]
