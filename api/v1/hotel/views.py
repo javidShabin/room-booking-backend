@@ -1,3 +1,4 @@
+from django.core.serializers import serialize
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -51,4 +52,21 @@ def get_hotels_list(request):
     }
     return Response(response_data, status=200)
 
-# Get 
+# Get hotel by id
+# *********************************
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def single_hotel(request, hotel_id):
+    hotel = get_object_or_404(Hotel, id=hotel_id)
+    if request.hotel.id != hotel.id:
+        return Response({"status": 6001, "message": "Permission denied"}, status=403)
+
+    serializer = HotelSerializer(hotel)
+
+    response_data = {
+        "status_code": 6000,
+        "data": serializer.data,
+        "message": "Hotel fetched successfully",
+    }
+
+    return Response(response_data, status=200)
