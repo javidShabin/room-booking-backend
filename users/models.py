@@ -1,4 +1,3 @@
-from tokenize import blank_re
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -15,7 +14,6 @@ class User(AbstractUser):
     is_manager = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     profile_image = models.FileField(
-        default="https://www.dreamstime.com/illustration/placeholder-profile.html",
         upload_to="profiles/",
         blank=True,
         null=True,
@@ -32,5 +30,5 @@ class User(AbstractUser):
         verbose_name_plural = "Users"
         ordering = ["-id"]
 
-    def _str_(self):
+    def __str__(self):
         return self.email
