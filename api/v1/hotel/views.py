@@ -17,9 +17,14 @@ from hotel.models import Hotel
 def create_hotel(request):
     name = request.data.get("name")
     location = request.data.get("location")
+    manager_id = request.data.get("manager_id") or request.data.get("managerId")
+    if not manager_id:
+        return Response({"status": 6001, "message": "manager_id is required"}, status=400)
     if name and location and Hotel.objects.filter(name=name, location=location).exists():
         return Response({"status": 6001, "message": "Hotel already exists"}, status=400)
-    serializer = HotelSerializer(data=request.data)
+    data = request.data.copy()
+    data["manager_id"] = manager_id
+    serializer = HotelSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
         response_data = {
@@ -45,3 +50,5 @@ def get_hotels_list(request):
         "message": "Hotels fetched successfully",
     }
     return Response(response_data, status=200)
+
+# Get 

@@ -7,6 +7,7 @@ class HotelSerializer(serializers.ModelSerializer):
         model = Hotel
         fields = [
             'id',
+            'manager_id',
             'name',
             'location',
             'address',
