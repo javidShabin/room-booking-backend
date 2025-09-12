@@ -52,15 +52,13 @@ def get_hotels_list(request):
     }
     return Response(response_data, status=200)
 
+
 # Get hotel by id
 # *********************************
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def single_hotel(request, hotel_id):
     hotel = get_object_or_404(Hotel, id=hotel_id)
-    if request.hotel.id != hotel.id:
-        return Response({"status": 6001, "message": "Permission denied"}, status=403)
-
     serializer = HotelSerializer(hotel)
 
     response_data = {
