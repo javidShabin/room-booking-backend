@@ -12,5 +12,7 @@ urlpatterns = [
     path("single_hotel/<int:hotel_id>/", views.single_hotel, name="single_hotel"),
     # Activate api url
     path("activate/<int:hotel_id>/", views.activate_hotel, name="activate_hotel"),
+    # Update the hotel by id
+    path("update_hotel/<int:hotel_id>/", views.update_hotel, name="hotel_update")
   
 ]
