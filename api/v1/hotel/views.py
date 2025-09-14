@@ -1,4 +1,3 @@
-
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -76,6 +75,38 @@ def single_hotel(request, hotel_id):
     }
 
     return Response(response_data, status=200)
+
+
+# Hotel edit by Id
+# *************************************
+@api_view(["PUT", "PATCH"])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def update_hotel(request, hotel_id):
+    hotel = get_object_or_404(Hotel, id=hotel_id)
+
+    # Check the user role is manager, manager can update the hotel
+    if not (request.user.is_manager):
+        return Response({"status": 6001, "message": "Permission denied"}, status=403)
+
+    data = request.data.copy()
+
+    manager_id = data.get("manager_id") or data.get("managerId")
+    if manager_id:
+        data["manager_id"] = manager_id
+
+    serializer = HotelSerializer(hotel, data=data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        response_data = {
+            "status_code": 6000,
+            "data": serializer.data,
+            "message": "Hotel updated successfully",
+        }
+        return Response(response_data, status=200)
+
+    return Response({"status": 6001, "errors": serializer.errors}, status=400)
 
 
 # ************ Admin can activate the hotels after verification ********
