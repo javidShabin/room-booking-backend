@@ -18,4 +18,4 @@ class Room(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Room {self.number} ({self.room_type})"
+        return self.number
