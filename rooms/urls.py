@@ -7,7 +7,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/customer/',include("api.v1.customer.urls",namespace='customer')),
-    path('api/v1/hotel/',include("api.v1.hotel.urls", namespace='hotel'))
+    path('api/v1/hotel/',include("api.v1.hotel.urls", namespace='hotel')),
+    path('api/v1/room/',include("api.v1.room.urls", namespace='room'))
 ]
 
 if settings.DEBUG:
