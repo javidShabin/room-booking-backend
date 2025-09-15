@@ -20,6 +20,7 @@ class Room(models.Model):
     description = models.TextField(blank=True, null=True)  # Additional details
     price = models.DecimalField(max_digits=10, decimal_places=2)  # Room price
     is_available = models.BooleanField(default=True)
+    image = models.ImageField(upload_to='room_images/', blank=True, null=True)  # Room image
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available')
     capacity = models.IntegerField(default=1)             # Max occupants
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp

@@ -12,3 +12,5 @@ from room.models import Room
 # ************************* CRUD operations for rooms ******************************
 
 # Create Room by hotel id
+# Get all rooms by hotel id
+# 
