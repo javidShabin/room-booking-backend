@@ -14,6 +14,7 @@ class Room(models.Model):
         ('maintenance', 'Under Maintenance'),
         ('out_of_service', 'Out of Service'),
     ]
+    hotel_id = models.ForeignKey('hotel.Hotel', on_delete=models.CASCADE, related_name='rooms')
     number = models.CharField(max_length=10, unique=True)  # Room number
     floor = models.IntegerField()                        # Floor number
     room_type = models.CharField(max_length=20, choices=ROOM_TYPE_CHOICES)

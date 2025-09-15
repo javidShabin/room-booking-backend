@@ -14,6 +14,8 @@ class RoomSerializer(serializers.ModelSerializer):
             "description",
             "price",
             "is_available",
+            "image",
+            "status",
             "capacity",
             "created_at",
             "updated_at",
