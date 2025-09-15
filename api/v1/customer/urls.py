@@ -14,4 +14,6 @@ urlpatterns = [
         views.update_user_profile,
         name="update_user_profile",
     ),
+    path("user/update_password/",views.change_password, name="change_password"),
+    path("user/delete_user/", views.delete_user, name="delete_user")
 ]

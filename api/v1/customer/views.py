@@ -245,7 +245,6 @@ def update_user_profile(request, user_id):
 
 # Change password
 
-
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def change_password(request):
@@ -253,6 +252,11 @@ def change_password(request):
     old_password = request.data.get("old_password")
     new_password = request.data.get("new_password")
     confirm_password = request.data.get("confirm_password")
+
+    if not old_password or not new_password or not confirm_password:
+        return Response(
+            {"status": 6001, "message": "All fields are required"}, status=400
+        )
 
     if not user.check_password(old_password):
         return Response(
@@ -269,3 +273,12 @@ def change_password(request):
     return Response(
         {"status": 6000, "message": "Password changed successfully"}, status=200
     )
+
+# Delete user profile
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_user(request):
+    user = request.user
+    user.delete()
+    return Response({"status": 6000, "message": "User account deleted"}, status=200)
