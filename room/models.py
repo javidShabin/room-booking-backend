@@ -2,7 +2,7 @@ from django.db import models
 
 class Room(models.Model):
     ROOM_TYPE_CHOICES = [
-    ('single', 'Single'),
+        ('single', 'Single'),
         ('double', 'Double'),
         ('suite', 'Suite'),
         ('deluxe', 'Deluxe'),
