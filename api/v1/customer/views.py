@@ -236,5 +236,36 @@ def update_user_profile(request, user_id):
     }
     return Response(response_data, status=200)
 
+
 # ******************** User profile updating function complete *******************
 # ************************************************************************
+
+# Password functions
+# ****************************************
+
+# Change password
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    user = request.user
+    old_password = request.data.get("old_password")
+    new_password = request.data.get("new_password")
+    confirm_password = request.data.get("confirm_password")
+
+    if not user.check_password(old_password):
+        return Response(
+            {"status": 6001, "message": "Old password is incorrect"}, status=400
+        )
+    if new_password != confirm_password:
+        return Response(
+            {"status": 6001, "message": "Passwords do not match"}, status=400
+        )
+
+    user.set_password(new_password)
+    user.save()
+
+    return Response(
+        {"status": 6000, "message": "Password changed successfully"}, status=200
+    )
