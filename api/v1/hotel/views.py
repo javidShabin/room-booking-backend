@@ -17,6 +17,7 @@ from hotel.models import Hotel
 @permission_classes([AllowAny])
 @parser_classes([MultiPartParser, FormParser])
 def create_hotel(request):
+    
     name = request.data.get("name")
     location = request.data.get("location")
     manager_id = request.data.get("manager_id") or request.data.get("managerId")
